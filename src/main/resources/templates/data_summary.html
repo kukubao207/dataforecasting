@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta content="webthemez" name="author" />
+    <title>数据概览</title>
+    <script th:src="@{/assets/js/jquery.min.js}"></script>
+    <!-- Bootstrap Styles-->
+    <link th:href="@{/assets/css/bootstrap.css}" rel="stylesheet" />
+    <!-- FontAwesome Styles-->
+    <link th:href="@{/assets/css/font-awesome.css}" rel="stylesheet" />
+    <!-- Morris Chart Styles-->
+    <link th:href="@{/assets/js/morris/morris-0.4.3.min.css}" rel="stylesheet" />
+    <!-- Custom Styles-->
+    <link th:href="@{/assets/css/custom-styles.css}" rel="stylesheet" />
+    <!-- Google Fonts-->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+    <link rel="stylesheet" th:href="@{/assets/js/Lightweight-Chart/cssCharts.css}"/>
+    <!-- echart js -->
+    <script th:src="@{/assets/js/echarts.min.js}"></script>
+</head>
+<body>
+<div id="wrapper">
+    <!-- header -->
+    <nav class="navbar navbar-default top-navbar" role="navigation">
+        <!-- 标题和那个sidebar的缩放按钮 -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" th:href="@{/uploadForm}"><strong><i class="icon fa fa-plane"></i> 民航代理人后台</strong></a>
+            <div id="sideNav" href="">
+                <i class="fa fa-bars icon"></i>
+            </div>
+        </div>
+
+        <ul class="nav navbar-top-links navbar-right">
+            <a th:if="${downloadStatus == 'download'}" th:href="@{/download/predict_sales.csv}" id="download">下载预测数据</a>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                    <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li><a href="#"><i class="fa fa-user fa-fw"></i> 账户信息</a>
+                    </li>
+                    <li><a href="#"><i class="fa fa-gear fa-fw"></i> 设置</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li><a href="#"><i class="fa fa-sign-out fa-fw"></i> 注销</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <!--/. NAV TOP  -->
+    <nav class="navbar-default navbar-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="main-menu">
+                <li>
+                    <a th:href="@{/uploadForm}"><i class="fa fa-desktop"></i> 上传数据</a>
+                </li>
+                <li>
+                    <a class="active-menu" th:href="@{/data_summary}"><i class="fa fa-dashboard"></i> 数据概览</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fa fa-sitemap"></i> 数据可视化<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a th:href="@{/data_marketrank}">市场地位分析</a>
+                        </li>
+                        <li>
+                            <a th:href="@{/data_agent}">具体代理人分析</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- /. NAV SIDE  -->
+
+    <div id="page-wrapper">
+        <div class="header">
+            <h1 class="page-header">
+                数据概览 <small>hello</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li class="active">数据概览</li>
+            </ol>
+        </div>
+
+        <div id="page-inner">
+
+            <div class="row">
+
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                    <div class="board">
+                        <div class="panel panel-primary">
+                            <div class="number">
+                                <h3>
+                                    <h3 th:text="${size}"></h3>
+                                    <small>上传数据天数</small>
+                                </h3>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-comments fa-5x green"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                    <div class="board">
+                        <div class="panel panel-primary">
+                            <div class="number">
+                                <h3>
+                                    <h3 th:text="${agentNum}"></h3>
+                                    <small>交易点(代理人)</small>
+                                </h3>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-user fa-5x yellow"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                    <div class="board">
+                        <div class="panel panel-primary">
+                            <div class="number">
+                                <h3>
+                                    <h3 th:text="${validate}"></h3>
+                                    <small>交易有向边</small>
+                                </h3>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-shopping-cart fa-5x blue"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                    <div class="board">
+                        <div class="panel panel-primary">
+                            <div class="number">
+                                <h3>
+                                    <h3 th:text="${invalidate}"></h3>
+                                    <small>被过滤的无效边</small>
+                                </h3>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-eye fa-5x red"></i>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!--/.row-->
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="card-title">
+                                <div class="title">有效数据率</div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <!-- 柱状图 -->
+                            <div id="main1" style="width: 800px;height:400px; margin: auto"></div>
+                            <script th:inline="javascript">
+                                /*<![CDATA[*/
+                                // 基于准备好的dom，初始化echarts实例
+                                var myChart = echarts.init(document.getElementById('main1'));
+
+                                // 指定图表的配置项和数据
+                                option = {
+                                    title : {
+                                        text: '有效交易有向边饼图',
+                                        x:'center'
+                                    },
+                                    tooltip : {
+                                        trigger: 'item',
+                                        formatter: "{a} <br/>{b} : {c} ({d}%)"
+                                    },
+                                    legend: {
+                                        orient : 'vertical',
+                                        x : 'left',
+                                        data : ['交易天数<=10','10<交易天数<=20','20<交易天数<=30','30<交易天数<=40','交易天数>=40']
+                                    },
+                                    toolbox: {
+                                        show : true,
+                                        feature : {
+                                            mark : {show: true},
+                                            dataView : {show: true, readOnly: false},
+                                            magicType : {
+                                                show: true,
+                                                type: ['pie', 'funnel'],
+                                                option: {
+                                                    funnel: {
+                                                        x: '25%',
+                                                        width: '50%',
+                                                        funnelAlign: 'left',
+                                                        max: 1548
+                                                    }
+                                                }
+                                            },
+                                            restore : {show: true},
+                                            saveAsImage : {show: true}
+                                        }
+                                    },
+                                    calculable : true,
+                                    series : [
+                                        {
+                                            name:'交易天数',
+                                            type:'pie',
+                                            radius : '55%',
+                                            center: ['50%', '60%'],
+                                            data:[
+                                                {value:[[${part0}]], name:'小于等于10天'},
+                                                {value:[[${part1}]], name:'在11到20之间'},
+                                                {value:[[${part2}]], name:'在21到30之间'},
+                                                {value:[[${part3}]], name:'在31到40之间'},
+                                                {value:[[${part4}]], name:'大于等于41天'}
+                                            ]
+                                        }
+                                    ]
+                                };
+                                // 使用刚指定的配置项和数据显示图表。
+                                myChart.setOption(option);
+                                /*]]>*/
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /. ROW  -->
+    <!--/.row-->
+    <!-- /. PAGE WRAPPER  -->
+</div>
+<!-- /. WRAPPER  -->
+<!-- JS Scripts-->
+<!-- Bootstrap Js -->
+<script th:src="@{/assets/js/bootstrap.min.js}"></script>
+
+<!-- Metis Menu Js -->
+<script th:src="@{/assets/js/jquery.metisMenu.js}"></script>
+<!-- Morris Chart Js -->
+<script th:src="@{/assets/js/morris/raphael-2.1.0.min.js}"></script>
+<script th:src="@{/assets/js/morris/morris.js}"></script>
+<script th:src="@{/assets/js/easypiechart.js}"></script>
+<script th:src="@{/assets/js/easypiechart-data.js}"></script>
+<script th:src="@{/assets/js/Lightweight-Chart/jquery.chart.js}"></script>
+<!-- Custom Js -->
+<script th:src="@{/assets/js/custom-scripts.js}"></script>
+<!-- Chart Js -->
+<script type="text/javascript" th:src="@{/assets/js/chart.min.js}"></script>
+<script type="text/javascript" th:src="@{/assets/js/chartjs.js}"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function () {
+        var process = [[${process}]];
+        if (process === "wait") {
+            alert("请等待后台进程完成处理！");
+        }
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>数据可视化</title>
+    <script th:src="@{/assets/js/jquery.min.js}"></script>
+    <!-- Bootstrap Styles-->
+    <link th:href="@{/assets/css/bootstrap.css}" rel="stylesheet" />
+    <!-- FontAwesome Styles-->
+    <link th:href="@{/assets/css/font-awesome.css}" rel="stylesheet" />
+    <!-- Custom Styles-->
+    <link th:href="@{/assets/css/custom-styles.css}" rel="stylesheet" />
+    <!-- Google Fonts-->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+    <!-- TABLE STYLES-->
+    <link th:href="@{/assets/js/dataTables/dataTables.bootstrap.css}" rel="stylesheet" />
+    <!-- echart js -->
+    <script th:src="@{/assets/js/echarts.min.js}"></script>
+</head>
+<body>
+<div id="wrapper">
+    <!-- header -->
+    <nav class="navbar navbar-default top-navbar" role="navigation">
+        <!-- 标题和那个sidebar的缩放按钮 -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" th:href="@{/uploadForm}"><strong><i class="icon fa fa-plane"></i>  民航代理人后台</strong></a>
+            <div id="sideNav" href="">
+                <i class="fa fa-bars icon"></i>
+            </div>
+        </div>
+
+        <ul class="nav navbar-top-links navbar-right">
+            <a th:if="${downloadStatus=='download'}" th:href="@{/download/predict_sales.csv}" id="download">下载预测数据</a>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                    <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li><a href="#"><i class="fa fa-user fa-fw"></i> 账户信息</a>
+                    </li>
+                    <li><a href="#"><i class="fa fa-gear fa-fw"></i> 设置</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li><a href="#"><i class="fa fa-sign-out fa-fw"></i> 注销</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <!--/. NAV TOP  -->
+    <nav class="navbar-default navbar-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="main-menu">
+                <li>
+                    <a th:href="@{/uploadForm}"><i class="fa fa-desktop"></i> 上传数据</a>
+                </li>
+                <li>
+                    <a th:href="@{/data_summary}"><i class="fa fa-dashboard"></i> 数据概览</a>
+                </li>
+
+                <li>
+                    <a class="active-menu" href="#"><i class="fa fa-sitemap"></i> 数据可视化<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a th:href="@{/data_marketrank}">市场地位分析</a>
+                        </li>
+                        <li>
+                            <a th:href="@{/data_agent}">具体代理人分析</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+    </nav>
+    <!-- /. NAV SIDE  -->
+    <div id="page-wrapper">
+        <div class="header">
+            <h1 class="page-header">
+                市场地位分析 <small>hello</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#">数据可视化</a></li>
+                <li class="active">市场地位分析</li>
+            </ol>
+        </div>
+        <div id="page-inner">
+            <!-- 天数选择表单 -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="card-title">
+                                <div class="title">天数选择</div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <form th:action="@{/dailyAnalyse}" method="post">
+                                <div class="form-group">
+                                    <label for="day">日期</label>
+                                    <input type="number" class="form-control" id="day" th:placeholder="请输入要查询的日期" name="day_id" min="1" th:max="${END_DAY}"/>
+                                </div>
+                                <button type="submit" class="btn btn-default">查询</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /. ROW  -->
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- Advanced Tables -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            第<span th:text="${day}">&nbsp;</span>天前五百名代理人市场地位排名表
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                    <thead>
+                                    <tr>
+                                        <th>排名</th>
+                                        <th>代理人编号</th>
+                                        <th>当天交易额</th>
+                                        <th>当天交易量</th>
+                                        <th>入度</th>
+                                        <th>出度</th>
+                                        <th>综合值</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr th:each="agent : ${agentList}" class="odd gradeX">
+                                        <td th:text="${agent.rank}">1</td>
+                                        <td th:text="${agent.nbr}">O5234</td>
+                                        <td th:text="${agent.sumCnt}">25</td>
+                                        <td th:text="${agent.sumRound}" class="center">4000</td>
+                                        <td th:text="${agent.indeg}" class="center">30</td>
+                                        <td th:text="${agent.outdeg}" class="center">30</td>
+                                        <td th:text="${agent.pagerankValue}" class="center">2000.2</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End Advanced Tables -->
+                </div>
+            </div>
+            <!-- /. ROW  -->
+        </div>
+        <!-- /. PAGE INNER  -->
+    </div>
+    <!-- /. PAGE WRAPPER  -->
+</div>
+<!-- /. WRAPPER  -->
+<!-- JS Scripts-->
+<!-- Bootstrap Js -->
+<script th:src="@{/assets/js/bootstrap.min.js}"></script>
+<!-- Metis Menu Js -->
+<script th:src="@{/assets/js/jquery.metisMenu.js}"></script>
+<!-- Morris Chart Js -->
+<script th:src="@{/assets/js/morris/raphael-2.1.0.min.js}"></script>
+<script th:src="@{/assets/js/morris/morris.js}"></script>
+<!-- DATA TABLE SCRIPTS -->
+<script th:src="@{/assets/js/dataTables/jquery.dataTables.js}"></script>
+<script th:src="@{/assets/js/dataTables/dataTables.bootstrap.js}"></script>
+<script>
+    $(document).ready(function () {
+        $('#dataTables-example').dataTable();
+    });
+</script>
+<!-- Custom Js -->
+<script th:src="@{/assets/js/custom-scripts.js}"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function () {
+        var process = [[${process}]];
+        if (process === "wait") {
+            alert("请等待后台进程完成处理！");
+        }
+    });
+    /*]]>*/
+</script>
+</body>
+</html>
