@@ -2,9 +2,7 @@ package cumt.wjq.util;
 
 import java.io.File;
 
-/**
- * Created by wanghaogang on 2017/6/30.
- */
+
 public class FileUtils {
     public static void deleteAllFilesOfDir(File path) {
         if (!path.exists())

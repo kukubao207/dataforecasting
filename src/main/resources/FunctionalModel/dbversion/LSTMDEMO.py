@@ -81,7 +81,7 @@ def evaluate_ar_model(dataset):
 
 def output_to_csv():
     headers = ['day_id', 'sale_nbr', 'buy_nbr', 'cnt', 'round']
-    f = open('/Users/wanghaogang/Desktop/predict_sales.csv', 'w')
+    f = open('/Users/wjq/Desktop/predict_sales.csv', 'w')
     f.write(','.join(headers) + '\n')
     for i in range(20):
         new_cnt = new_cnts[:, i]

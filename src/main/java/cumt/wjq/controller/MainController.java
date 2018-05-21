@@ -40,7 +40,7 @@ public class MainController {
             if(!basePath.endsWith(File.separator))
                 basePath += File.separator;
             //basePath= /Users/wjq/Desktop/dataforecasting/build/resources/main/
-            basePath = basePath.substring(0,basePath.length()-18) + "resources" + File.separator + "main" + File.separator;
+            basePath = basePath.substring(0,basePath.length()-8) + "resources" + File.separator ;
 
             //=/Users/wjq/Desktop/dataforecasting/build/resources/main/uploads
             uploadPath = basePath + "uploads";
@@ -446,9 +446,7 @@ public class MainController {
         String fullFileName = uploadPath + File.separator + fileName;
         //读取文件
         if(!new File(fullFileName).exists())
-        {
             return;
-        }
         InputStream in = new FileInputStream(fullFileName);
         OutputStream out = response.getOutputStream();
         //写文件

@@ -9,9 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Created by wanghaogang on 2017/7/9.
- */
+
 public class PythonData {
     public static List<Agent> getPythonData(String path) throws IOException{
         List<Agent> agentList= new ArrayList<>();
