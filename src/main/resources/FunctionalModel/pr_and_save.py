@@ -62,9 +62,9 @@ def out_to_csv(ranks):
             f.write(','.join([str(s) for s in record])+'\n')
     f.flush()
     agents_details = pd.read_csv(f.name, header=0)
-    print("---agents_details---")
-    print(agents_details)
-    print("---agents_details---")
+    #print("---agents_details---")
+    #print(agents_details)
+    #print("---agents_details---")
     agents_details.to_hdf(os.path.join(BASE_DIR, 'agents_detail.h5'), 'df')
     f.close()
 
