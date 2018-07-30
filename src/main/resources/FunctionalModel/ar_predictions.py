@@ -46,7 +46,9 @@ def evaluate_ar_model(X):
     model = AR(X)
     model_fit = model.fit(maxlag=7, disp=False)
     window = model_fit.k_ar
+    #print("window=%d" %(window))
     coef = model_fit.params
+    #print(coef)
     # walk forward over time steps in test
     history = [i for i in train]
     predictions = list()
@@ -58,6 +60,8 @@ def evaluate_ar_model(X):
         else:
             obs = yhat
         history.append(obs)
+    #error = mean_squared_error(test,predictions)
+    #print("MSE : %.3f" %error)
     return predictions
 
 
